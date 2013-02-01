@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="centered">
+        <img id="hand" src="/img/hand.png" />
+        <h1>Gesture of the Dead!</h1>
+        <p>Use mouse gestures to defend yourself from the zombie hoard!</p>
+        <div class="find-a-game well">
+            <form action="/game" method="POST" id="find-game-form" class="form-inline">
+                <input class="input-large" type="text" id="username" name="username" value="" placeholder="Enter a username" />
+            </form>
+            <button type="button" class="find-a-game-button btn btn-large btn-success disabled">Find a game!</button>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div id="game-area" class="waiting directions">
+        <div id="game">
+            <div class="zombie zombie-1">
+                <span>A</span>
+            </div>
+            <div class="zombie zombie-2">
+                <span>A</span>
+            </div>
+            <div class="zombie zombie-3">
+                <span>A</span>
+            </div>
+            <div class="zombie zombie-4">
+                <span>A</span>
+            </div>
+            <div class="zombie zombie-5">
+                <span>A</span>
+            </div>
+            <div class="zombie zombie-6">
+                <span>A</span>
+            </div>
+            <div class="zombie zombie-7">
+                <span>A</span>
+            </div>
+        </div>
+        <div id="output"><h1> </h1></div>
+	    <div id="waiting"><h1>Waiting for opponent...</h1></div>
+        <div id="console">
+        	<div id="alphabet"></div> 
+	        <h1 id="directions">Draw the <em>letter</em> appearing on the zombie with your mouse.</h1>
+	        <div id="scores">
+	        	<h1>You: <span id="score">0</span> - VS - <span id="opponent">Opponent</span>: <span id="opponent-score">0</span></h1>
+	        </div>
+        </div>
+        <div id="pad"></div>
+    </div>
+
+    <div id="opponent-quit" class="modal hide fade">
+        <div class="modal-header">
+            <h3>Retreat!</h3>
+        </div>
+        <div class="modal-body">
+            <p>Your opponent has quit!</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="home-url" class="btn btn-primary">Back home to find a worthy opponent</a>
+        </div>
+    </div>
+
+    <div id="win" class="modal hide fade">
+        <div class="modal-header">
+            <h3>YAY!</h3>
+        </div>
+        <div class="modal-body">
+            <p>You've won!</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="home-url" class="btn btn-primary">Back home to play again</a>
+        </div>
+    </div>
+
+    <div id="lose" class="modal hide fade">
+        <div class="modal-header">
+            <h3>OUCH!</h3>
+        </div>
+        <div class="modal-body">
+            <p>You've lost!</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="home-url" class="btn btn-primary">Back home to play again</a>
+        </div>
+    </div>
+{% endblock %}
