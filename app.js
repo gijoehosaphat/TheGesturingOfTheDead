@@ -8,8 +8,15 @@ var express = require("express"),
     swig = require('./config/consolidate-swig').swig,
     swigLib = require('swig');
 
-var redis = require('redis-url').connect(process.env.REDISTOGO_URL);
-//var redis = require("redis");
+var redisClient;
+if (process.env.REDISTOGO_URL) {
+    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+    redisClient = require("redis").createClient(rtg.port, rtg.hostname);
+    redisClient.auth(rtg.auth.split(":")[1]);
+} else {
+    var redis = require("redis").createClient();
+    redisClient = redis.createClient();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routes Handlers
@@ -24,7 +31,6 @@ var server = http.createServer(app);
 var io = socketIO.listen(server);
 var sessionSecret = "random session secret";
 var sessionKey = "sid";
-var redisClient = redis.createClient();
 var sessionStore = new connect.session.MemoryStore();
 
 
