@@ -37,7 +37,12 @@ redisClient.on("error", function (err) {
 });
 
 io.configure(function () {
-    io.set('transports', [ 'websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling' ]);
+    if (process.env.REDISTOGO_URL) { //Cheating to tell if we are on Heroku vs. localhost.
+        io.set("transports", ["xhr-polling"]);
+        io.set("polling duration", 10);
+    } else {
+        io.set('transports', [ 'websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling' ]);
+    }
     io.set('authorization', function (data, accept) {
         if (!data.headers.cookie) {
             return accept('Session cookie required.', false);
