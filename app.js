@@ -4,11 +4,16 @@
 var express = require("express"),
     http = require("http"),
     socketIO = require('socket.io'),
-//    redis = require("redis"),
-    redis = require('redis-url').connect(process.env.REDISTOGO_URL),
     connect = require("connect"),
     swig = require('./config/consolidate-swig').swig,
     swigLib = require('swig');
+
+var redis;
+if (process.env.REDISTOGO_URL) {
+    redis = require('redis-url').connect(process.env.REDISTOGO_URL);
+} else {
+    redis = require("redis");
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routes Handlers
