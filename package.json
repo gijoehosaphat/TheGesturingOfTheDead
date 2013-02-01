@@ -10,7 +10,8 @@
         "socket.io": "0.9.13",
         "connect": "2.7.2",
         "cookie": "0.0.5",
-        "connect-redis": "1.4.5"
+        "connect-redis": "1.4.5",
+        "redis-url": "0.1.0"
     },
     	"scripts": {
     	"start": "node app"

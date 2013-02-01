@@ -4,9 +4,9 @@
 var express = require("express"),
     http = require("http"),
     socketIO = require('socket.io'),
-    redis = require("redis"),
+//    redis = require("redis"),
+    redis = require('redis-url').connect(process.env.REDISTOGO_URL),
     connect = require("connect"),
-    RedisStore = require('connect-redis')(express),
     swig = require('./config/consolidate-swig').swig,
     swigLib = require('swig');
 
@@ -24,7 +24,7 @@ var io = socketIO.listen(server);
 var sessionSecret = "random session secret";
 var sessionKey = "sid";
 var redisClient = redis.createClient();
-var sessionStore = new RedisStore();
+var sessionStore = new connect.session.MemoryStore();
 
 
 redisClient.on("error", function (err) {
