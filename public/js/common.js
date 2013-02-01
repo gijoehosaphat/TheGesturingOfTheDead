@@ -56,7 +56,7 @@ var Game = (function () {
     });
 
     var createSocketConnection = function () {
-        socket = io.connect('http://localhost');
+        socket = io.connect('http://goinstant-demo.herokuapp.com');
 
         socket.emit("ready");
 
