@@ -136,6 +136,16 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    function generateUUID(){
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d/16);
+            return (c == 'x' ? r : (r&0x7|0x8)).toString(16);
+        });
+        return uuid;
+    };
+
     socket.on('ready', function () {
         if (onlineUsers.length === 0) { // If no-one is waiting...
             onlineUsers.push({ socketID: socket.id, username: hs.session.username });
@@ -147,7 +157,7 @@ io.sockets.on('connection', function (socket) {
 
             //Our simple game object.
             var game = {
-                id: 1,
+                id: generateUUID(),
                 turn: 1,
                 letter: alphabet[Math.floor((Math.random() * 26))],
                 scores: {},
@@ -181,35 +191,37 @@ io.sockets.on('connection', function (socket) {
         var gameID = hs.session.gameID;
         redisClient.get("GAME_" + gameID, function (err, rawData) {
             var game = JSON.parse(rawData);
-            if (!err && game.players[hs.session.username] === socket.id) { //Ensure the game actually has this player...
-                if (incomingData.turn === game.turn && incomingData.letter === game.letter) { //Ensure we have the right turn and letter...
-                    //Modify the game and update it in Redis.
-                    game.turn = Math.min(10, game.turn + 1);
-                    game.letter = alphabet[Math.floor((Math.random() * 26))];
-                    game.scores[hs.session.username] = game.scores[hs.session.username] + 1;
-                    redisClient.set("GAME_" + game.id, JSON.stringify(game));
-                    redisClient.expire("GAME_" + game.id, 3600);
+            if (!err) {
+                if (game.players[hs.session.username] === socket.id) { //Ensure the game actually has this player...
+                    if (incomingData.turn === game.turn && incomingData.letter === game.letter) { //Ensure we have the right turn and letter...
+                        //Modify the game and update it in Redis.
+                        game.turn = Math.min(10, game.turn + 1);
+                        game.letter = alphabet[Math.floor((Math.random() * 26))];
+                        game.scores[hs.session.username] = game.scores[hs.session.username] + 1;
+                        redisClient.set("GAME_" + game.id, JSON.stringify(game));
+                        redisClient.expire("GAME_" + game.id, 3600);
 
-                    var opponent = null;
-                    var opponentSocket = null;
-                    for (var name in game.players) {
-                        if (name !== hs.session.username) {
-                            opponent = name;
-                            opponentSocket = io.sockets.socket(game.players[name]);
+                        var opponent = null;
+                        var opponentSocket = null;
+                        for (var name in game.players) {
+                            if (name !== hs.session.username) {
+                                opponent = name;
+                                opponentSocket = io.sockets.socket(game.players[name]);
+                            }
                         }
-                    }
 
-                    if (game.turn >= 10) {
-                        if (game.scores[hs.session.username] > game.scores[opponent]) {
-                            socket.emit('win', { game: game, opponent: opponent, you: hs.session.username });
-                            opponentSocket.emit('lose', { game: game, opponent: hs.session.username, you: opponent });
+                        if (game.turn >= 10) {
+                            if (game.scores[hs.session.username] > game.scores[opponent]) {
+                                socket.emit('win', { game: game, opponent: opponent, you: hs.session.username });
+                                opponentSocket.emit('lose', { game: game, opponent: hs.session.username, you: opponent });
+                            } else {
+                                socket.emit('lose', { game: game, opponent: opponent, you: hs.session.username });
+                                opponentSocket.emit('win', { game: game, opponent: hs.session.username, you: opponent });
+                            }
                         } else {
-                            socket.emit('lose', { game: game, opponent: opponent, you: hs.session.username });
-                            opponentSocket.emit('win', { game: game, opponent: hs.session.username, you: opponent });
+                            socket.emit('zombieAttack', { game: game, hit: true, opponent: opponent, you: hs.session.username });
+                            opponentSocket.emit('zombieAttack', { game: game, hit: false, opponent: hs.session.username, you: opponent });
                         }
-                    } else {
-                        socket.emit('zombieAttack', { game: game, hit: true, opponent: opponent, you: hs.session.username });
-                        opponentSocket.emit('zombieAttack', { game: game, hit: false, opponent: hs.session.username, you: opponent });
                     }
                 }
             }
