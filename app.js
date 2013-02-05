@@ -157,7 +157,7 @@ io.sockets.on('connection', function (socket) {
 
             //Our simple game object.
             var game = {
-                id: generateUUID(),
+                id: 1,
                 turn: 1,
                 letter: alphabet[Math.floor((Math.random() * 26))],
                 scores: {},
