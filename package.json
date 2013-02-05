@@ -1,6 +1,6 @@
 {
-    "name": "GestureGame",
-    "description": "Multi-player Gesture match game.",
+    "name": "TheSwipingOfTheDead",
+    "description": "Multi-player swiping match game.",
     "author": "Joe Leonard <joeleonard@gmail.com>",
     "version": "0.0.1",
     "dependencies": {
